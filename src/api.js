@@ -6,10 +6,13 @@ const normalizeApiUrl = (url) => {
    if (!cleaned.startsWith('http://') && !cleaned.startsWith('https://')) {
       cleaned = `https://${cleaned}`;
    }
+   // Supprimer les doubles slashes sauf après le protocole
+   cleaned = cleaned.replace(/([^:]\/)\/+/g, '$1');
+   // S'assurer que ça se termine par /api
    if (!cleaned.endsWith('/api') && !cleaned.endsWith('/api/')) {
       cleaned = cleaned.replace(/\/$/, '') + '/api';
    }
-   return cleaned.replace(/\/$/, '');
+   return cleaned.replace(/\/+$/, '');
 };
 
 const API_URL = normalizeApiUrl(rawApiUrl);
