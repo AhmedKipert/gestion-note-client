@@ -1,16 +1,31 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+const normalizeApiUrl = (url) => {
+   if (!url) return 'http://localhost:5000/api';
+   let cleaned = url.trim();
+   if (!cleaned.startsWith('http://') && !cleaned.startsWith('https://')) {
+      cleaned = `https://${cleaned}`;
+   }
+   if (!cleaned.endsWith('/api') && !cleaned.endsWith('/api/')) {
+      cleaned = cleaned.replace(/\/$/, '') + '/api';
+   }
+   return cleaned.replace(/\/$/, '');
+};
+
+const API_URL = normalizeApiUrl(rawApiUrl);
 
 export const apiRequest = async (
    path,
    { token, method = 'GET', body } = {}
 ) => {
+   const cleanPath = path.startsWith('/') ? path : `/${path}`;
    console.log(
       'API Request actuel:',
       method,
-      path,
+      cleanPath,
       body ? `Body: ${JSON.stringify(body)}` : ''
    );
-   const response = await fetch(`${API_URL}${path}`, {
+   const response = await fetch(`${API_URL}${cleanPath}`, {
       method,
       headers: {
          ...(body ? { 'Content-Type': 'application/json' } : {}),
