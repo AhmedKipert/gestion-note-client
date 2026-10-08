@@ -6,8 +6,8 @@ const normalizeApiUrl = (url) => {
    if (!cleaned.startsWith('http://') && !cleaned.startsWith('https://')) {
       cleaned = `https://${cleaned}`;
    }
-   // Supprimer les doubles slashes sauf après le protocole
-   cleaned = cleaned.replace(/([^:]\/)\/+/g, '$1');
+   // Supprimer les doubles slashes
+   cleaned = cleaned.replace(/([^:]\/)\/+/g, '$1').replace(/(?<!:)\/\//g, '/');
    // S'assurer que ça se termine par /api
    if (!cleaned.endsWith('/api') && !cleaned.endsWith('/api/')) {
       cleaned = cleaned.replace(/\/$/, '') + '/api';
@@ -18,8 +18,9 @@ const normalizeApiUrl = (url) => {
 const API_URL = normalizeApiUrl(rawApiUrl);
 
 const buildUrl = (path) => {
-   const base = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
-   const p = path.startsWith('/') ? path : `/${path}`;
+   let base = API_URL.replace(/\/+$/, '');
+   let p = path || '/';
+   p = p.replace(/^\/+/, '/');
    return `${base}${p}`;
 };
 
