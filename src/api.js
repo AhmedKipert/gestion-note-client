@@ -14,6 +14,12 @@ const normalizeApiUrl = (url) => {
 
 const API_URL = normalizeApiUrl(rawApiUrl);
 
+const buildUrl = (path) => {
+   const base = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
+   const p = path.startsWith('/') ? path : `/${path}`;
+   return `${base}${p}`;
+};
+
 export const apiRequest = async (
    path,
    { token, method = 'GET', body } = {}
@@ -25,7 +31,7 @@ export const apiRequest = async (
       cleanPath,
       body ? `Body: ${JSON.stringify(body)}` : ''
    );
-   const response = await fetch(`${API_URL}${cleanPath}`, {
+   const response = await fetch(buildUrl(path), {
       method,
       headers: {
          ...(body ? { 'Content-Type': 'application/json' } : {}),
