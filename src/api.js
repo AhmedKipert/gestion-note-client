@@ -19,8 +19,15 @@ const API_URL = normalizeApiUrl(rawApiUrl);
 
 const buildUrl = (path) => {
    let base = API_URL.replace(/\/+$/, '');
-   let p = path || '/';
-   p = p.replace(/^\/+/, '/');
+   if (!base.endsWith('/api')) {
+      if (base.endsWith('api')) {
+         base = base.slice(0, -3) + '/api';
+      } else {
+         base = base + '/api';
+      }
+   }
+   const cleanPath = path || '/';
+   const p = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
    return `${base}${p}`;
 };
 
