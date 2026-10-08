@@ -27,7 +27,7 @@ const buildUrl = (path) => {
       }
    }
    const cleanPath = path || '/';
-   const p = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+   const p = '/' + cleanPath.replace(/^\/+/, '');
    return `${base}${p}`;
 };
 
